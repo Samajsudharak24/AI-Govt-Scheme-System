@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 import os
-
+from dotenv import load_dotenv
 # -------------------------
 # PAGE CONFIG
 # -------------------------
@@ -57,9 +57,9 @@ h1 {
 # -------------------------
 # GEMINI API
 # -------------------------
-
+load_dotenv()
 client = genai.Client(
-    api_key="AIzaSyASNN5u2vXOjUHVrqG_GAi81bNGjgR2NZo"
+    api_key=os.getenv("GEMINI_API_KEY")
 )
 
 # -------------------------
