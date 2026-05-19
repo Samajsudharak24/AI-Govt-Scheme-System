@@ -229,7 +229,7 @@ if st.button("🔍 Find Schemes", use_container_width=True):
     with st.spinner("🔎 Finding best government schemes for you..."):
 
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-1.5-flash",
             contents=prompt
         )
 
