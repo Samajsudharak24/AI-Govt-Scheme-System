@@ -58,8 +58,11 @@ h1 {
 # GEMINI API
 # -------------------------
 load_dotenv()
+
+api_key = os.getenv("GEMINI_API_KEY")
+
 client = genai.Client(
-    api_key=os.getenv("GEMINI_API_KEY")
+    api_key=api_key
 )
 
 # -------------------------
@@ -229,7 +232,7 @@ if st.button("🔍 Find Schemes", use_container_width=True):
     with st.spinner("🔎 Finding best government schemes for you..."):
 
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.5-flash-lite",
             contents=prompt
         )
 
