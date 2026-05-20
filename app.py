@@ -23,41 +23,39 @@ st.set_page_config(
 )
 load_css("style.css")
 st.markdown("""
-<h1 style='text-align: center; color: #2E8B57;'>
+<div style="
+background: linear-gradient(135deg, #1E3A8A, #2563EB);
+padding: 30px;
+border-radius: 20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+color:white;
+margin-bottom:30px;
+">
+
+<div>
+<h1 style="margin:0;">
 🇮🇳 AI Government Scheme Assistant
 </h1>
 
-<h4 style='text-align: center; color: gray;'>
+<p style="font-size:18px; margin-top:10px;">
 Helping citizens discover the right government schemes using AI + RAG
-</h4>
+</p>
+</div>
+
+<div style="
+background: rgba(255,255,255,0.15);
+padding:12px 20px;
+border-radius:30px;
+font-size:16px;
+">
+🔒 Secure & Private
+</div>
+
+</div>
 """, unsafe_allow_html=True)
 
-st.markdown("---")
-# -------------------------
-# SIDEBAR
-# -------------------------
-
-with st.sidebar:
-
-    st.title("ℹ️ About")
-
-    st.write("""
-This AI-powered system recommends suitable government schemes based on:
-
-✅ Age  
-✅ State  
-✅ Occupation  
-✅ Family Income  
-
-Built using:
-
-• Gemini AI  
-• FAISS Search  
-• RAG Architecture  
-• Government PDF Knowledge Base
-""")
-
-    st.info("🇮🇳 Helping citizens discover the right schemes")
 # -------------------------
 # CUSTOM STYLE
 # -------------------------
@@ -126,24 +124,11 @@ for file in os.listdir(pdf_folder):
 # -------------------------
 # PREMIUM FORM SECTION
 # -------------------------
+# -------------------------
+# PREMIUM FORM SECTION
+# -------------------------
 
 st.markdown("<br>", unsafe_allow_html=True)
-
-st.markdown("""
-<div style="
-background: white;
-padding: 20px;
-border-radius: 18px;
-box-shadow: 0px 4px 20px rgba(0,0,0,0.08);
-margin-bottom: 25px;
-">
-<h2 style="
-color:#1e3a8a;
-margin-bottom:20px;
-">
-📝 Enter Your Details
-</h2>
-""", unsafe_allow_html=True)
 
 states = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam",
@@ -171,36 +156,77 @@ occupations = [
     "Other"
 ]
 
-col1, col2 = st.columns(2)
+main_col, side_col = st.columns([2, 1])
 
-with col1:
+with main_col:
 
-    age = st.number_input(
-        "Enter your age",
-        min_value=1,
-        max_value=100
-    )
+    st.markdown("""
+    <div style="
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0px 4px 20px rgba(0,0,0,0.08);
+    margin-bottom:20px;
+    ">
+    <h2 style="color:#1e3a8a;">
+    📝 Check Eligibility
+    </h2>
+    """, unsafe_allow_html=True)
 
-    state = st.selectbox(
-        "Select your state",
-        states
-    )
+    col1, col2 = st.columns(2)
 
-with col2:
+    with col1:
 
-    occupation = st.selectbox(
-        "Select occupation",
-        occupations
-    )
+        age = st.number_input(
+            "Enter your age",
+            min_value=1,
+            max_value=100
+        )
 
-    income = st.number_input(
-        "Enter yearly family income (₹)",
-        min_value=0,
-        step=1000
-    )
+        state = st.selectbox(
+            "Select your state",
+            states
+        )
 
-st.markdown("</div>", unsafe_allow_html=True)
+    with col2:
 
+        occupation = st.selectbox(
+            "Select occupation",
+            occupations
+        )
+
+        income = st.number_input(
+            "Enter yearly family income (₹)",
+            min_value=0,
+            step=1000
+        )
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+with side_col:
+
+    st.markdown("""
+    <div style="
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0px 4px 20px rgba(0,0,0,0.08);
+    ">
+    <h2 style="color:#1e3a8a;">
+    ⚙️ Technology Stack
+    </h2>
+
+    ✅ Gemini AI <br><br>
+    ✅ FAISS Search <br><br>
+    ✅ RAG Architecture <br><br>
+    ✅ PDF Knowledge Base <br><br>
+
+    <p style="color:gray;">
+    Helping citizens find eligible schemes using AI.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 # -------------------------
 # BUTTON
@@ -275,9 +301,24 @@ if st.button(
 
     st.success("✅ Schemes Found Successfully!")
 
-    st.subheader("🎯 Recommended Government Schemes")
+    st.markdown("""
+    <div style="
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0px 4px 20px rgba(0,0,0,0.08);
+    margin-top:20px;
+    margin-bottom:20px;
+    ">
+    <h2 style="color:#1e3a8a;">
+    🎯 Recommended Government Schemes
+    </h2>
+    """, unsafe_allow_html=True)
 
-    st.info(response.text)
+    st.write(response.text)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
     st.subheader("🔗 Apply Here")
 
     for scheme, link in scheme_links.items():
@@ -287,3 +328,14 @@ if st.button(
             st.markdown(
                 f"✅ [{scheme}]({link})"
             )
+    st.markdown("---")
+
+    st.markdown("""
+    <div style="
+    text-align:center;
+    color:gray;
+    padding:10px;
+    ">
+    Built using ❤️ AI + RAG for smarter welfare discovery
+    </div>
+    """, unsafe_allow_html=True)       
