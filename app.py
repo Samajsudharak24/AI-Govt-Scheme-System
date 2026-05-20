@@ -12,8 +12,20 @@ from dotenv import load_dotenv
 
 st.set_page_config(
     page_title="AI Government Scheme Assistant",
-    page_icon="🇮🇳"
+    page_icon="🇮🇳",
+    layout="wide"
 )
+st.markdown("""
+<h1 style='text-align: center; color: #2E8B57;'>
+🇮🇳 AI Government Scheme Assistant
+</h1>
+
+<h4 style='text-align: center; color: gray;'>
+Helping citizens discover the right government schemes using AI + RAG
+</h4>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
 # -------------------------
 # SIDEBAR
 # -------------------------
@@ -104,27 +116,7 @@ for file in os.listdir(pdf_folder):
 # -------------------------
 # TITLE
 # -------------------------
-st.markdown("""
-<div style="
-background: linear-gradient(135deg, #2563EB, #60A5FA);
-padding: 30px;
-border-radius: 20px;
-text-align: center;
-color: white;
-margin-bottom: 25px;
-box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
-">
 
-<h1>
-🇮🇳 AI Government Scheme Assistant
-</h1>
-
-<p style="font-size:18px;">
-Helping citizens discover the right government schemes using AI + RAG
-</p>
-
-</div>
-""", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 st.markdown("## 📝 Enter Your Details")
@@ -196,7 +188,7 @@ if st.button("🔍 Find Schemes", use_container_width=True):
     query_embedding = model.encode([user_query])
 
     # Search in FAISS
-    k = 2
+    k = 5
 
     distances, indices = index.search(
         np.array(query_embedding),
@@ -212,7 +204,11 @@ if st.button("🔍 Find Schemes", use_container_width=True):
     prompt = f"""
     You are an AI Government Scheme Assistant.
 
-    Use ONLY the information below.
+    First prioritize the information from the provided PDF knowledge base.
+
+    If enough information is available in PDFs, use that.
+
+    If relevant information is missing, intelligently recommend additional suitable government schemes based on the user's profile, state, occupation, age, and income.
 
     Relevant Information:
     {relevant_text}
@@ -221,13 +217,16 @@ if st.button("🔍 Find Schemes", use_container_width=True):
     {user_query}
 
     Give:
-    1. Best matching schemes
-    2. Benefits
+
+    1. Best matching government schemes
+    2. Benefits of each scheme
     3. Required documents
     4. How to apply
+    5. Mention whether recommendation came from PDF knowledge base or AI recommendation
 
     Keep answer simple and easy to understand.
     """
+    
 
     with st.spinner("🔎 Finding best government schemes for you..."):
 
