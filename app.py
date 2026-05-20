@@ -6,6 +6,12 @@ import faiss
 import numpy as np
 import os
 from dotenv import load_dotenv
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(
+            f"<style>{f.read()}</style>",
+            unsafe_allow_html=True
+        )
 # -------------------------
 # PAGE CONFIG
 # -------------------------
@@ -15,6 +21,7 @@ st.set_page_config(
     page_icon="🇮🇳",
     layout="wide"
 )
+load_css("style.css")
 st.markdown("""
 <h1 style='text-align: center; color: #2E8B57;'>
 🇮🇳 AI Government Scheme Assistant
@@ -116,10 +123,28 @@ for file in os.listdir(pdf_folder):
 # -------------------------
 # TITLE
 # -------------------------
+# -------------------------
+# PREMIUM FORM SECTION
+# -------------------------
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-st.markdown("## 📝 Enter Your Details")
+st.markdown("""
+<div style="
+background: white;
+padding: 20px;
+border-radius: 18px;
+box-shadow: 0px 4px 20px rgba(0,0,0,0.08);
+margin-bottom: 25px;
+">
+<h2 style="
+color:#1e3a8a;
+margin-bottom:20px;
+">
+📝 Enter Your Details
+</h2>
+""", unsafe_allow_html=True)
+
 states = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam",
     "Bihar", "Chhattisgarh", "Goa", "Gujarat",
@@ -132,7 +157,23 @@ states = [
     "Uttarakhand", "West Bengal", "Delhi"
 ]
 
-with st.container():
+occupations = [
+    "Student",
+    "Farmer",
+    "Job Seeker",
+    "Private Employee",
+    "Government Employee",
+    "Business Owner",
+    "Self Employed",
+    "Senior Citizen",
+    "Woman Entrepreneur",
+    "Disabled Person",
+    "Other"
+]
+
+col1, col2 = st.columns(2)
+
+with col1:
 
     age = st.number_input(
         "Enter your age",
@@ -145,21 +186,11 @@ with st.container():
         states
     )
 
+with col2:
+
     occupation = st.selectbox(
         "Select occupation",
-        [
-            "Student",
-            "Farmer",
-            "Job Seeker",
-            "Private Employee",
-            "Government Employee",
-            "Business Owner",
-            "Self Employed",
-            "Senior Citizen",
-            "Woman Entrepreneur",
-            "Disabled Person",
-            "Other"
-        ]
+        occupations
     )
 
     income = st.number_input(
@@ -168,13 +199,20 @@ with st.container():
         step=1000
     )
 
+st.markdown("</div>", unsafe_allow_html=True)
+
 
 # -------------------------
 # BUTTON
 # -------------------------
 
-if st.button("🔍 Find Schemes", use_container_width=True):
+st.markdown("<br>", unsafe_allow_html=True)
 
+if st.button(
+    "🔍 Find Schemes",
+    use_container_width=True,
+    type="primary"
+):
     user_query = f"""
     Age: {age}
     State: {state}
