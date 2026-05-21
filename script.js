@@ -1,7 +1,29 @@
 // ==========================================
 // YOJANASETU AI - WEB APP LOGIC & STATE ENGINE
 // ==========================================
+// Firebase Config
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyA0EecQ3XGCSlHhS5bjPKUndAgIlAM5TD8",
+  authDomain: "yojanasetu-ai.firebaseapp.com",
+  projectId: "yojanasetu-ai",
+  storageBucket: "yojanasetu-ai.firebasestorage.app",
+  messagingSenderId: "743453160405",
+  appId: "1:743453160405:web:adb632da4a52fc2e4f035c",
+  measurementId: "G-QVZ2M9BFJY"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 // Mock Schemes Dataset
 const SCHEMES_DATABASE = [
   {
@@ -364,60 +386,82 @@ function toggleAuthState(state) {
   currentAuthState = state;
 }
 
-function handleAuthSubmit(event, state) {
+async function handleAuthSubmit(event, state) {
   event.preventDefault();
-  
-  if (state === 'login') {
-    // Transition to success screen
-    toggleAuthState('success');
-    document.getElementById('success-message-text').innerText = 'Initializing verified citizen profile...';
-    
-    setTimeout(() => {
-      activeUser.isLoggedIn = true;
-      updateDashboardUI();
-      showToast('Logged In Successfully', `Welcome back, ${activeUser.name}!`, 'success');
-      navigateTo('dashboard');
-      toggleAuthState('login'); // reset auth card back state
-    }, 1800);
-  }
-  else if (state === 'signup') {
-    const signupName = document.getElementById('signup-name').value;
-    const signupEmail = document.getElementById('signup-email').value;
-    const signupState = document.getElementById('signup-state').value;
-    const signupOcc = document.getElementById('signup-occupation').value;
-    
-    // Save to state
-    activeUser.name = signupName;
-    activeUser.email = signupEmail;
-    activeUser.state = signupState;
-    activeUser.occupation = signupOcc;
-    activeUser.isLoggedIn = true;
-    
-    toggleAuthState('success');
-    document.getElementById('success-message-text').innerText = 'Registering credentials with Digilocker database...';
 
-    setTimeout(() => {
-      updateDashboardUI();
-      updateSettingsUI();
-      showToast('Profile Registered', 'Your citizen portal access has been initialized.', 'success');
+  try {
+
+    // LOGIN
+    if (state === 'login') {
+
+      const email =
+        document.getElementById('login-email').value;
+
+      const password =
+        document.getElementById('login-password').value;
+
+      const userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      activeUser.isLoggedIn = true;
+      activeUser.email = userCredential.user.email;
+
+      showToast(
+        'Login Successful',
+        'Welcome back to YojanaSetu AI',
+        'success'
+      );
+
       navigateTo('dashboard');
-      toggleAuthState('login'); // reset card state
-    }, 2000);
-  }
-  else if (state === 'forgot') {
-    toggleAuthState('otp');
-    showToast('OTP Dispatched', 'Verification code dispatched to your email address.', 'info');
-  }
-  else if (state === 'otp') {
-    toggleAuthState('success');
-    document.getElementById('success-message-text').innerText = 'Validating 4-digit MFA token...';
-    setTimeout(() => {
+    }
+
+    // SIGNUP
+    else if (state === 'signup') {
+
+      const name =
+        document.getElementById('signup-name').value;
+
+      const email =
+        document.getElementById('signup-email').value;
+
+      const password =
+        document.getElementById('signup-password').value;
+
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      activeUser.name = name;
+      activeUser.email = email;
+      activeUser.isLoggedIn = true;
+
+      showToast(
+        'Account Created',
+        'Welcome to YojanaSetu AI',
+        'success'
+      );
+
       navigateTo('dashboard');
-      toggleAuthState('login');
-      showToast('Access Verified', 'Sandbox session authorized.', 'success');
-    }, 1500);
+    }
+
+  } catch (error) {
+
+    showToast(
+      'Authentication Failed',
+      error.message,
+      'danger'
+    );
+
+    console.error(error);
   }
 }
+    
 
 // Auto tab in OTP inputs
 function focusNextInput(input, index) {
